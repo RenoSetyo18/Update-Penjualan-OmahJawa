@@ -44,19 +44,48 @@
             text-align: center;
             font-style: italic;
         }
+        .btn {
+            display: inline-block;
+            font-family: Arial, sans-serif;
+            padding: 8px 14px;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+            border: 1px solid transparent;
+            font-size: 14px;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: #fff;
+            border-color: #6c757d;
+        }
+        .btn-info {
+            background: #17a2b8;
+            color: #fff;
+            border-color: #17a2b8;
+        }
+        .btn-success {
+            background: #28a745;
+            color: #fff;
+            border-color: #28a745;
+        }
+        .btn:hover {
+            opacity: 0.92;
+        }
     </style>
 </head>
-<body onload="window.print()">
-
-    <h2>Cafe Omah Jawa</h2>
+<body>
+    <div class="page">
     <h3>Struk Pembayaran</h3>
 
     <p><strong>Nomor Meja:</strong> {{ $transaksi->nomeja }}</p>
     <p><strong>Atas Nama:</strong> {{ $transaksi->atasnama }}</p>
     <p><strong>Tanggal:</strong> {{ date('d-m-Y H:i', strtotime($transaksi->created_at)) }}</p>
+    <p><strong>Metode Pembayaran:</strong> {{ $transaksi->metode_pembayaran ?? 'Cash' }}</p>
 
     @php
-        $jumlahBayar = isset($jumlah_bayar) ? $jumlah_bayar : $transaksi->totalharga;
+        $jumlahBayar = isset($jumlah_bayar) ? floatval($jumlah_bayar) : $transaksi->totalharga;
+        $kembalian = isset($kembalian) ? floatval($kembalian) : ($jumlahBayar - $transaksi->totalharga);
     @endphp
 
     <table>
@@ -89,18 +118,17 @@
             </tr>
             <tr>
                 <td colspan="3" class="right">Kembalian</td>
-                <td class="right">Rp{{ number_format($jumlahBayar - $transaksi->totalharga, 2) }}</td>
+                <td class="right">Rp{{ number_format($kembalian, 2) }}</td>
             </tr>
         </tfoot>
     </table>
 
     <p class="note">Terima kasih sudah berbelanja di Cafe Omah Jawa!</p>
-    <script>
-        window.print();
-        window.onafterprint = function () {
-            window.close();
-        };
-    </script>
 
+    <script>
+        window.addEventListener('load', function () {
+            window.print();
+        });
+    </script>
 </body>
 </html>

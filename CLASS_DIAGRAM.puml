@@ -1,0 +1,96 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor #F8F9FA
+  BorderColor #333333
+  ArrowColor #333333
+}
+left to right direction
+
+class User {
+  -id
+  -name
+  -email
+  -password
+  -role
+  +availableRoles(): array
+  +roleLabel(role): string
+  +hasRole(...roles): bool
+  +setPasswordAttribute(value)
+}
+
+class Jenis {
+  -id
+  -nama_jenis
+  -deskripsi
+  +menus()
+}
+
+class Menu {
+  -id
+  -nama
+  -harga
+  -jenis_id
+  -deskripsi
+  -note
+  -estimasi_waktu
+  -active
+  +getEstimasiMenitAttribute()
+  +jenis()
+}
+
+class Transaksi {
+  -id
+  -kode
+  -user_id
+  -nomeja
+  -atasnama
+  -totalharga
+  -status
+  -metode_pembayaran
+  -paid_at
+  +kokiStatusLabel(status): string
+  +transaksiStatusLabel(status): string
+  +kasirStatusLabel(status): string
+  +details()
+  +isBeingProcessed(): bool
+  +isOnlineOrder(): bool
+  +isAlreadyPaidOnline(): bool
+}
+
+class DetailTransaksi {
+  -id
+  -transaksi_id
+  -menu_id
+  -jumlah
+  -harga
+  -subtotal
+  -note
+  -menu_status
+  -ready_at
+  +menu()
+  +getEstimasiMenitAttribute()
+  +transaksi()
+  +menuStatusLabel(status): string
+}
+
+class Koki {
+  -id
+  -nomeja
+  -menu
+  -status
+}
+
+class Order {
+  -id
+  -menu_name
+  -quantity
+  -status
+}
+
+User "1" --> "0..*" Transaksi : membuat
+Jenis "1" --> "0..*" Menu : mengelompokkan
+Menu "1" --> "0..*" DetailTransaksi : dipilih pada
+Transaksi "1" --> "0..*" DetailTransaksi : berisi
+DetailTransaksi "0..*" --> "1" Menu : merujuk ke
+@enduml

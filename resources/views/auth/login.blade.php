@@ -43,21 +43,6 @@
         </button>
     </div>
 </form>
-    <div class="mt-6 text-center">
-     <p class="text-gray-600">
-      or sign up using
-     </p>
-     <div class="flex justify-center mt-4">
-      <a class="text-blue-600 hover:text-blue-700 mx-2" href="#">
-       <i class="fab fa-facebook-f">
-       </i>
-      </a>
-      <a class="text-blue-400 hover:text-blue-500 mx-2" href="#">
-       <i class="fab fa-twitter">
-       </i>
-      </a>
-     </div>
-    </div>
    </div>
   </div>
   @if(session('error-unauth'))

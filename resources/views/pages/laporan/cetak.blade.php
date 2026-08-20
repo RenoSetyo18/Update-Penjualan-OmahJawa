@@ -29,10 +29,40 @@
         th {
             background-color: #f2f2f2;
         }
+        .btn {
+            display: inline-block;
+            font-family: Arial, sans-serif;
+            padding: 8px 14px;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+            border: 1px solid transparent;
+            font-size: 14px;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: #fff;
+            border-color: #6c757d;
+        }
+        .btn-info {
+            background: #17a2b8;
+            color: #fff;
+            border-color: #17a2b8;
+        }
+        .btn-success {
+            background: #28a745;
+            color: #fff;
+            border-color: #28a745;
+        }
+        .btn:hover { opacity: 0.92; }
     </style>
 </head>
 <body>
     <div class="container">
+        <div style="margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+            <button type="button" onclick="window.history.back()" style="padding: 8px 14px; border: 1px solid #6c757d; background: #f8f9fa; color: #212529; border-radius: 4px; cursor: pointer;">Kembali</button>
+            <button type="button" onclick="window.print()" style="padding: 8px 14px; border: 1px solid #17a2b8; background: #17a2b8; color: #fff; border-radius: 4px; cursor: pointer;">Preview Print</button>
+        </div>
         <img src="{{ asset('dataset/dist/img/LogoOmahJawa.png') }}" class="img-circle elevation-2" alt="User Image" style="max-width: 15%; height: auto;"> <!-- Corrected image path -->
         <h1>Cetak Laporan Transaksi</h1>
         <p>Tanggal Cetak: {{ \Carbon\Carbon::now()->format('d-m-Y') }}</p> <!-- Add print date -->
@@ -51,7 +81,7 @@
                     <td>{{ $transaksi->id }}</td>
                     <td>{{ $transaksi->created_at }}</td>
                     <td>{{ $transaksi->totalharga }}</td>
-                    <td>{{ $transaksi->status }}</td>
+                    <td>{{ \App\Models\Transaksi::transaksiStatusLabel($transaksi->status) }}</td>
                 </tr>
                 @endforeach
                 <tr>
@@ -62,10 +92,9 @@
         </table>
     </div>
     <script>
-        window.print();
-        window.onafterprint = function () {
-            window.close();
-        };
+        window.addEventListener('load', function () {
+            window.print();
+        });
     </script>
 </body>
 </html>

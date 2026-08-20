@@ -20,6 +20,9 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('dataset/dist/css/adminlte.min.css') }}">
 
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+
   <!-- DataTables -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 </head>
@@ -71,9 +74,6 @@
 <!-- AdminLTE App -->
 <script src="{{ asset('/dataset/dist/js/adminlte.min.js') }}"></script>
 
-<!-- AdminLTE for demo purposes -->
-<script src="{{ asset('/dataset/dist/js/demo.js') }}"></script>
-
 <!-- DataTables -->
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
@@ -106,6 +106,32 @@
       text: '{{ session('info') }}',
     });
   @endif
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('form.delete-confirm').forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        var itemName = form.dataset.itemName || 'data ini';
+
+        Swal.fire({
+          title: 'Yakin ingin menghapus ' + itemName + '?',
+          text: 'Data yang dihapus tidak bisa dikembalikan.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Ya, hapus!',
+          cancelButtonText: 'Batal',
+          reverseButtons: true,
+        }).then(function (result) {
+          if (result.isConfirmed) {
+            form.submit();
+          }
+        });
+      });
+    });
+  });
 </script>
 
 <!-- Script tambahan halaman -->

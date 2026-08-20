@@ -43,7 +43,7 @@
         <div class="col-md-4">
             <h3>Pesanan</h3>
             <div class="mb-3">
-                <input type="text" id="no-meja" class="form-control mb-2" placeholder="Nomor Meja">
+                <input type="number" id="no-meja" class="form-control mb-2" min="1" max="999" placeholder="Nomor Meja" onblur="checkTransactionByTable()">
                 <input type="text" id="atas-nama" class="form-control" placeholder="Atas Nama Konsumen">
             </div>
             <div style="height: 400px; overflow-y: auto;">
@@ -51,6 +51,7 @@
                     <thead>
                         <tr>
                             <th>Nama</th>
+                            <th>Note</th>
                             <th>Jumlah</th>
                             <th>Harga</th>
                             <th>Subtotal</th>
@@ -105,7 +106,7 @@
                 existingItem.jumlah++;
                 existingItem.subtotal = existingItem.jumlah * existingItem.harga;
             } else {
-                items.push({ menu_id: id, nama: nama, jumlah: 1, harga: harga, subtotal: harga });
+                items.push({ menu_id: id, nama: nama, note: '-', jumlah: 1, harga: harga, subtotal: harga });
             }
             renderSelectedItems();
             updateTotalHarga();
@@ -130,6 +131,7 @@
                 let row = tableBody.insertRow();
                 row.innerHTML = `
                     <td>${item.nama}</td>
+                    <td><input type="text" class="form-control form-control-sm" value="${item.note}" onchange="updateItemNote(${index}, this.value)"></td>
                     <td>${item.jumlah}</td>
                     <td>${item.harga}</td>
                     <td>${item.subtotal}</td>
@@ -143,21 +145,71 @@
             document.getElementById('total-harga').value = totalHarga.toFixed(2);
         }
 
-        function saveOrder() {
-    const noMeja = document.getElementById('no-meja').value;
-    const atasNama = document.getElementById('atas-nama').value;
+        function updateItemNote(index, note) {
+            items[index].note = note || '-';
+        }
 
-    if (!noMeja || !atasNama || items.length === 0) {
+        // Fungsi untuk cek transaksi berdasarkan nomor meja
+        function checkTransactionByTable() {
+            const noMeja = document.getElementById('no-meja').value.trim();
+            const atasNamaInput = document.getElementById('atas-nama');
+
+            if (!noMeja) {
+                atasNamaInput.value = '';
+                atasNamaInput.style.backgroundColor = '#fff';
+                return;
+            }
+
+            fetch("{{ route('transaksi.getByTable') }}?nomeja=" + encodeURIComponent(noMeja), {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                }
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.found) {
+                    // Isi field atas nama dengan data dari transaksi sebelumnya
+                    atasNamaInput.value = result.atasnama;
+                    atasNamaInput.style.backgroundColor = '#e8f5e9'; // Highlight warna hijau untuk menunjukkan data auto-filled
+                } else {
+                    // Kosongkan field atas nama jika tidak ditemukan
+                    atasNamaInput.value = '';
+                    atasNamaInput.style.backgroundColor = '#fff3e0'; // Highlight warna oranye untuk menunjukkan input baru
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                atasNamaInput.value = '';
+                atasNamaInput.style.backgroundColor = '#fff';
+            });
+        }
+
+        function saveOrder() {
+    const noMeja = document.getElementById('no-meja').value.trim();
+    const atasNama = document.getElementById('atas-nama').value.trim();
+
+    if (!/^\d+$/.test(noMeja) || Number(noMeja) < 1 || Number(noMeja) > 999) {
         Swal.fire({
             icon: 'warning',
             title: 'Warning',
-            text: 'Harap isi semua data dengan benar!',
+            text: 'Nomor meja wajib diisi dengan angka antara 1 sampai 999.',
+        });
+        return;
+    }
+
+    if (!atasNama || items.length === 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Warning',
+            text: 'Harap isi atas nama dan pilih minimal satu item!',
         });
         return;
     }
 
     const data = {
-        nomeja: noMeja,
+        nomeja: Number(noMeja),
         atasnama: atasNama,
         items: items
     };
@@ -242,10 +294,10 @@
                     const tableBody = document.getElementById('menu-table-body');
                     const newRow = tableBody.insertRow();
                     newRow.innerHTML = `
-                        <td>New</td>
+                        <td>${result.id}</td>
                         <td>${result.nama}</td>
                         <td>${result.harga}</td>
-                        <td><button class="btn btn-success" onclick="addItem('New', '${result.nama}', ${result.harga})">+</button></td>
+                        <td><button class="btn btn-success" onclick="addItem(${result.id}, '${result.nama.replace(/'/g, "\\'")}', ${result.harga})">+</button></td>
                     `;
                     $('#addMenuModal').modal('hide');
                     Swal.fire({

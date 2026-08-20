@@ -1,0 +1,65 @@
+@startuml
+left to right direction
+skinparam actorStyle awesome
+skinparam useCase {
+  BackgroundColor<<Admin>> #F5F5DC
+  BackgroundColor<<Kasir>> #D6EAF8
+  BackgroundColor<<Koki>> #D5F5E3
+  BackgroundColor<<Pelayan>> #FDEBD0
+  BorderColor black
+}
+
+actor Pengguna
+actor Pelayan
+actor Kasir
+actor Koki
+actor Admin
+
+usecase "Login" as UC_Login
+usecase "Register" as UC_Register
+usecase "Logout" as UC_Logout
+usecase "Lihat Menu" as UC_LihatMenu
+usecase "Buat Pesanan" as UC_BuatPesanan
+usecase "Update Status Transaksi" as UC_UpdateStatus
+usecase "Lihat Dashboard" as UC_LihatDashboard
+usecase "Proses Pembayaran" as UC_Bayar
+usecase "Cetak Struk" as UC_CetakStruk
+usecase "Cetak Rekap Kasir" as UC_CetakRekapKasir
+usecase "Lihat Laporan" as UC_LihatLaporan
+usecase "Cetak Laporan" as UC_CetakLaporan
+usecase "Kelola Karyawan" as UC_KelolaKaryawan
+usecase "Kelola Jenis Menu" as UC_KelolaJenis
+usecase "Kelola Master Menu" as UC_KelolaMasterMenu
+usecase "Kelola Barang" as UC_KelolaBarang
+usecase "Lihat Antrian Koki" as UC_LihatAntrianKoki
+
+Pengguna --> UC_Login
+Pengguna --> UC_Register
+Pengguna --> UC_Logout
+
+Pelayan --> UC_LihatMenu
+Pelayan --> UC_BuatPesanan
+Pelayan --> UC_UpdateStatus
+Pelayan --> UC_LihatDashboard
+
+Kasir --> UC_LihatDashboard
+Kasir --> UC_Bayar
+Kasir --> UC_CetakStruk
+Kasir --> UC_CetakRekapKasir
+
+Koki --> UC_LihatDashboard
+Koki --> UC_LihatAntrianKoki
+Koki --> UC_UpdateStatus
+
+Admin --> UC_LihatDashboard
+Admin --> UC_LihatLaporan
+Admin --> UC_CetakLaporan
+Admin --> UC_KelolaKaryawan
+Admin --> UC_KelolaJenis
+Admin --> UC_KelolaMasterMenu
+Admin --> UC_KelolaBarang
+
+UC_LihatAntrianKoki --> UC_LihatDashboard : <<include>>
+UC_UpdateStatus --> UC_LihatMenu : <<extend>>
+UC_CetakLaporan --> UC_LihatLaporan : <<include>>
+@enduml

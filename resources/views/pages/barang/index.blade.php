@@ -9,14 +9,14 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 
     <table class="table table-bordered" id="barangTable">
-        <thead>
+        <thead class="text-center">
             <tr>
                 <th>Nama</th>
                 <th>Harga</th>
                 <th>Aksi</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="text-center">
             @foreach($menus as $menu)
             <tr id="menu-row-{{ $menu->id }}">
                 <td>{{ $menu->nama }}</td>
@@ -31,11 +31,11 @@
             <div class="modal fade" id="editModal-{{ $menu->id }}" tabindex="-1">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        <form method="POST" action="{{ route('barang.update', $menu->id) }}">
+                        <form method="POST" action="{{ route('barang.update', $menu->id) }}" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="modal-header">
-                                <h5 class="modal-title">Edit Menu</h5>
+                                <h5 class="modal-title">Edit Barang</h5>
                                 <button type="button" class="close" data-dismiss="modal">
                                     <span>&times;</span>
                                 </button>
@@ -48,6 +48,16 @@
                                 <div class="form-group">
                                     <label>Harga</label>
                                     <input type="number" name="harga" class="form-control" value="{{ $menu->harga }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Gambar Sekarang:</label><br>
+                                    @if($menu->gambar)
+                                        <img src="{{ asset('storage/'.$menu->gambar) }}" width="100" class="mb-2 rounded">
+                                    @else
+                                        <p>Tidak ada gambar</p>
+                                    @endif
+                                    <label>Ubah Gambar (opsional):</label>
+                                    <input type="file" name="gambar" class="form-control-file" accept="image/*">
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -67,7 +77,7 @@
 <div class="modal fade" id="addModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="POST" action="{{ route('barang.store') }}">
+            <form method="POST" action="{{ route('barang.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title">Tambah Barang</h5>
@@ -83,6 +93,10 @@
                     <div class="form-group">
                         <label>Harga</label>
                         <input type="number" name="harga" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Upload Gambar</label>
+                        <input type="file" name="gambar" class="form-control-file" accept="image/*">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -119,7 +133,7 @@
 
     function deleteMenu(id) {
         Swal.fire({
-            title: 'Yakin ingin menghapus menu ini?',
+            title: 'Yakin ingin menghapus barang ini?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Ya, hapus!',
@@ -147,8 +161,8 @@
                     }
                 })
                 .catch(error => {
-                    console.error(error);
-                    Swal.fire('Error', 'Terjadi kesalahan saat menghapus.', 'error');
+                    console.error('Error:', error);
+                    Swal.fire('Error', 'Terjadi error pada data yang di ubah.', 'error');
                 });
             }
         });

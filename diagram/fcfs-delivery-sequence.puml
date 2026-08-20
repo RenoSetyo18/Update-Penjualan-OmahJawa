@@ -1,0 +1,48 @@
+@startuml
+!theme plain
+skinparam sequence {
+  ArrowColor #2C3E50
+  LifeLineBorderColor #2C3E50
+  LifeLineBackgroundColor #F8F9FA
+  ParticipantBorderColor #2C3E50
+  ParticipantBackgroundColor #EAF2F8
+  BoxBackgroundColor #F8F9FA
+}
+
+title Sequence Diagram - FCFS Pengantaran Pesanan (Master Transaksi)
+
+actor Pelayan as Pelayan
+participant "TransaksiController" as Controller
+database "transaksis" as DBTransaksi
+database "detail_transaksis" as DBDetail
+
+Pelayan -> Controller: Buka master transaksi
+Controller -> DBTransaksi: query transaksi + relasi details.menu
+Controller -> Controller: sort transaksi dengan prioritas
+note right of Controller
+  Prioritas 1: status = makanan_siap
+  Prioritas 2: created_at terlama/terbaru sesuai logika tampilan
+end note
+Ccoller -> Controller: cari firstReadyToDe transaksi pertama status makanan_siaptntroller --> Pelayan: tampifirstReadyToDelivern firstReadyToDeliver
+
+Pelayan -> Controller: konfirmasi pengantaran pesanan (status = selesai)
+Controller -> DBTransaksi: find transaksi by id
+Controller -> Controller: validasi transisi dari makanan_siap -> selesai
+Controller -> DBTransaksi: query transaksi dengan status makanan_siap
+Controller -> Controller: urutkan berdasarkan created_at asc
+
+alt transaksi yang dikonfirmasi bukan yang paling tua
+    Controller --> Pelayan: error
+    note right of Controller
+      Harus mengantarkan pesanan siap
+      yang paling tua terlebih dahulu (FCFS).
+    end note
+else transaksi yang dikonfirmasi adalah yang paling tua
+    Controller -> DBTransaksi: update status transaksi menjadi selesai
+    Controller -> DBDetail: update menu_status = siap untuk detail yang memiliki ready_at
+    Controller --> Pelayan: success
+    note right of Controller
+      Status berhasil diubah menjadi selesai
+    end note
+end
+@enduml
