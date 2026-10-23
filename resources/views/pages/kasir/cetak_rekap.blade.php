@@ -190,10 +190,9 @@
         $sampai = $request?->sampai ?? null;
         $namaPencetak = auth()->user()?->name ?? auth()->user()?->nama ?? 'Administrator';
         $totalTransaksi = $transaksis->count();
-        $totalPendapatan = $transaksis->sum('totalharga');
-        $countMenunggu = $transaksis->whereIn('status', ['belum_diproses', 'sedang_diproses'])->count();
-        $countBayar = $transaksis->whereIn('status', ['makanan_siap', 'selesai'])->count();
+        $countBelumBayar = $transaksis->where('status', 'belum_bayar')->count();
         $countLunas = $transaksis->where('status', 'lunas')->count();
+        $totalPendapatan = $transaksis->where('status', 'lunas')->sum('totalharga');
         $periodeLabel = ($dari || $sampai)
             ? trim(implode(' s.d. ', array_filter([
                 $dari ? \Carbon\Carbon::parse($dari)->format('d M Y') : null,
@@ -237,8 +236,8 @@
                 </td>
                 <td>
                     <div class="card">
-                        <h3>Status (Menunggu / Bayar / Lunas)</h3>
-                        <p>{{ $countMenunggu }} / {{ $countBayar }} / {{ $countLunas }}</p>
+                        <h3>Status (Belum Lunas / Lunas)</h3>
+                        <p>{{ $countBelumBayar }} / {{ $countLunas }}</p>
                     </div>
                 </td>
             </tr>
@@ -262,8 +261,7 @@
                     @php
                         $statusLabel = \App\Models\Transaksi::kasirStatusLabel($transaksi->status);
                         $statusClass = match ($statusLabel) {
-                            'Menunggu' => 'badge-secondary',
-                            'Bayar' => 'badge-warning',
+                            'Belum Lunas' => 'badge-warning',
                             'Lunas' => 'badge-success',
                             default => 'badge-secondary',
                         };

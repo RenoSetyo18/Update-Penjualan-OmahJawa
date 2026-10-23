@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom CSS untuk memperbaiki sidebar AdminLTE */
+/* Shared responsive layout overrides for AdminLTE. */
 .main-sidebar {
     position: fixed !important;
     top: 0;
@@ -11,59 +11,163 @@
     height: 100vh !important;
     overflow-y: auto;
     z-index: 1030;
+    transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
 }
 
-.sidebar-mini .main-sidebar,
-body.sidebar-mini .main-sidebar,
+.main-header,
+.content-wrapper {
+    margin-left: 250px !important;
+}
+
 body.sidebar-collapse .main-sidebar {
     width: 80px;
 }
 
-.content-wrapper {
-    margin-left: 250px;
-}
-
-body.sidebar-mini .content-wrapper,
+body.sidebar-collapse .main-header,
 body.sidebar-collapse .content-wrapper {
     margin-left: 80px !important;
 }
 
-@media (max-width: 767.98px) {
-    .main-sidebar {
-        position: relative !important;
-        width: 100% !important;
-        height: auto !important;
+@media (max-width: 991.98px) {
+    .content-header {
+        padding-right: 1rem;
+        padding-left: 1rem;
     }
 
-    .content-wrapper {
-        margin-left: 0 !important;
+    .content {
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+
+    .content .container-fluid {
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    .table-responsive,
+    .table-responsive-custom {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table-responsive > .table,
+    .table-responsive-custom > .table {
+        min-width: 620px;
+    }
+
+    .card-header,
+    .card-footer {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .card-header > .card-tools,
+    .card-header > .btn,
+    .card-footer > .btn {
+        max-width: 100%;
     }
 }
 
-/* Global responsive improvements for tables and form layout */
-.table-responsive,
-.table-responsive-custom {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+@media (max-width: 992px) {
+    .main-sidebar {
+        width: min(250px, 85vw) !important;
+        max-width: 85vw;
+        height: 100vh !important;
+        margin-left: 0;
+        transform: translateX(-100%);
+        box-shadow: none !important;
+    }
+
+    body.sidebar-open .main-sidebar {
+        transform: translateX(0);
+        box-shadow: 8px 0 28px rgba(17, 35, 27, 0.2) !important;
+    }
+
+    .main-header,
+    .content-wrapper,
+    body.sidebar-collapse .main-header,
+    body.sidebar-collapse .content-wrapper {
+        margin-left: 0 !important;
+    }
+
+    .main-header.navbar {
+        min-height: 52px;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .main-header .nav-link {
+        padding-right: 0.55rem;
+        padding-left: 0.55rem;
+    }
+
+    .main-header .nav-link i {
+        margin-right: 0.2rem;
+    }
+
+    .main-header .navbar-nav {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .main-header .navbar-nav.ml-auto {
+        margin-left: auto;
+    }
+
+    .content-header {
+        padding: 0.85rem 0.75rem 0.45rem;
+    }
+
+    .content {
+        padding: 0 0.75rem 1rem;
+    }
+
+    .content .card-body {
+        padding: 0.85rem;
+    }
+
+    .content .table-responsive > .table,
+    .content .table-responsive-custom > .table {
+        min-width: 620px;
+    }
+
+    .content-header .row {
+        row-gap: 0.6rem;
+    }
+
+    .content-header h1 {
+        font-size: 1.45rem;
+    }
+
+    .form-inline,
+    .input-group {
+        max-width: 100%;
+    }
+
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+
+    .modal-dialog-centered {
+        min-height: calc(100% - 1rem);
+    }
 }
 
 .table {
     width: 100%;
-    min-width: 100%;
-    table-layout: fixed;
-    word-break: break-word;
+    max-width: 100%;
 }
 
-.table th,
-.table td {
-    white-space: normal;
-    overflow-wrap: anywhere;
+.table-responsive .table,
+.table-responsive-custom .table {
+    table-layout: auto;
 }
 
-.table .btn,
-.btn {
-    white-space: normal;
+.table td,
+.table th {
+    vertical-align: middle;
 }
 
 .form-group label,
@@ -73,38 +177,36 @@ body.sidebar-collapse .content-wrapper {
     margin-bottom: 0.35rem;
 }
 
-@media (max-width: 992px) {
-    .form-group {
-        width: 100%;
-    }
-
-    .row > [class*="col-"] {
-        flex: 0 0 100%;
+@media (max-width: 575.98px) {
+    .content .btn,
+    .content-header .btn {
         max-width: 100%;
     }
 
-    .card-body {
-        padding: 0.9rem;
+    .content .card-header {
+        padding: 0.8rem;
     }
 
-    .table th,
-    .table td {
-        font-size: 0.88rem;
+    .content .card-title {
+        font-size: 1rem;
     }
 
-    .nav-tabs .nav-link {
-        padding: 0.5rem 0.75rem;
+    .content .form-control,
+    .content .custom-select {
+        min-width: 0;
+    }
+
+    .content .table-responsive > .table,
+    .content .table-responsive-custom > .table {
+        min-width: 560px;
+    }
+
+    .main-header .nav-link {
         font-size: 0.9rem;
     }
 
-    .table-responsive,
-    .table-responsive-custom {
-        overflow-x: auto !important;
-        max-width: 100% !important;
-        background: transparent !important;
-    }
-
-    .table {
-        min-width: 0 !important;
+    .main-sidebar .user-panel img {
+        width: 76px !important;
+        height: 76px !important;
     }
 }

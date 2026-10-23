@@ -45,11 +45,6 @@ class DashboardController extends Controller
             }
         }
 
-        $kokiStatusBelum = 0;
-        $kokiStatusSedang = 0;
-        $kokiStatusSelesai = 0;
-        $kokiUnfinishedOrders = collect();
-
         $kasirTodayRevenue = 0;
         $kasirTodayTransactions = 0;
         $kasirTodayLunas = 0;
@@ -68,9 +63,7 @@ class DashboardController extends Controller
         $monthlyTrendPercent = 0;
         $currentMonthSales = 0;
         $previousMonthSales = 0;
-        $transaksiBelumDiproses = 0;
-        $transaksiSedangDiproses = 0;
-        $transaksiSelesai = 0;
+        $transaksiBelumBayar = 0;
         $pendapatanHarian = [];
         $penjualanHarian = [];
         $bestSellingByJenis = collect();
@@ -81,26 +74,6 @@ class DashboardController extends Controller
         $weeklyTrendPrevious = [];
         $monthlyComparisonLabels = ['Bulan Lalu', 'Bulan Ini'];
         $monthlyComparisonValues = [0, 0];
-
-        if ($user && $user->role === 'koki') {
-            $kokiStatusBelum = Transaksi::whereBetween('created_at', [$startDate, $endDate])
-                ->whereIn('status', [Transaksi::STATUS_BELUM_DIPROSES, Transaksi::STATUS_PESANAN_ONLINE])
-                ->count();
-
-            $kokiStatusSedang = Transaksi::whereBetween('created_at', [$startDate, $endDate])
-                ->where('status', Transaksi::STATUS_SEDANG_DIPROSES)
-                ->count();
-
-            $kokiStatusSelesai = Transaksi::whereBetween('created_at', [$startDate, $endDate])
-                ->whereIn('status', [Transaksi::STATUS_MAKANAN_SIAP, Transaksi::STATUS_SELESAI])
-                ->count();
-
-            $kokiUnfinishedOrders = Transaksi::with('details.menu')
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->whereNotIn('status', [Transaksi::STATUS_SELESAI, Transaksi::STATUS_LUNAS])
-                ->orderBy('created_at', 'asc')
-                ->get();
-        }
 
         if ($user && $user->role === 'kasir') {
             $kasirTodayRevenue = Transaksi::whereDate('paid_at', today())
@@ -118,12 +91,7 @@ class DashboardController extends Controller
                 ->count();
 
             $kasirUnpaidSource = Transaksi::with('details.menu')
-                ->whereIn('status', [
-                    Transaksi::STATUS_BELUM_DIPROSES,
-                    Transaksi::STATUS_SEDANG_DIPROSES,
-                    Transaksi::STATUS_MAKANAN_SIAP,
-                    Transaksi::STATUS_SELESAI,
-                ])
+                ->where('status', Transaksi::STATUS_BELUM_BAYAR)
                 ->orderByDesc('created_at')
                 ->get();
 
@@ -132,7 +100,8 @@ class DashboardController extends Controller
                 /** @var Transaksi $transaksi */
                 $transaksi = $item;
 
-                if ($transaksi->isOnlineOrder()) {
+                if ($transaksi->nomeja === null) {
+                    $kasirUnpaidTransactions->push($transaksi);
                     continue;
                 }
 
@@ -219,14 +188,8 @@ class DashboardController extends Controller
             $monthlyTrendPercent = $previousMonthSales > 0 ? ($monthlyTrendValue / $previousMonthSales) * 100 : ($currentMonthSales > 0 ? 100 : 0);
             $monthlyComparisonValues = [$previousMonthSales, $currentMonthSales];
 
-            $transaksiBelumDiproses = Transaksi::whereBetween('created_at', [$startDate, $endDate])
-                ->where('status', Transaksi::STATUS_BELUM_DIPROSES)
-                ->count();
-            $transaksiSedangDiproses = Transaksi::whereBetween('created_at', [$startDate, $endDate])
-                ->where('status', Transaksi::STATUS_SEDANG_DIPROSES)
-                ->count();
-            $transaksiSelesai = Transaksi::whereBetween('created_at', [$startDate, $endDate])
-                ->where('status', Transaksi::STATUS_SELESAI)
+            $transaksiBelumBayar = Transaksi::whereBetween('created_at', [$startDate, $endDate])
+                ->where('status', Transaksi::STATUS_BELUM_BAYAR)
                 ->count();
 
             $pendapatanHarian = Transaksi::whereBetween('created_at', [$startDate, $endDate])
@@ -283,10 +246,6 @@ class DashboardController extends Controller
         return view('pages.dashboard.index', compact(
             'startDate',
             'endDate',
-            'kokiStatusBelum',
-            'kokiStatusSedang',
-            'kokiStatusSelesai',
-            'kokiUnfinishedOrders',
             'kasirTodayRevenue',
             'kasirTodayTransactions',
             'kasirTodayLunas',
@@ -304,9 +263,7 @@ class DashboardController extends Controller
             'monthlyTrendPercent',
             'currentMonthSales',
             'previousMonthSales',
-            'transaksiBelumDiproses',
-            'transaksiSedangDiproses',
-            'transaksiSelesai',
+            'transaksiBelumBayar',
             'pendapatanHarian',
             'penjualanHarian',
             'bestSellingByJenis',
@@ -324,13 +281,16 @@ class DashboardController extends Controller
     {
         $source = $transaksis ?? Transaksi::query()->where('status', '<>', Transaksi::STATUS_LUNAS)->orderByDesc('created_at')->get();
 
-        return $source->filter(function ($item) use ($transaksi) {
-            if ($item->isOnlineOrder()) {
-                return false;
-            }
+        if ($transaksi->nomeja === null) {
+            return $source->filter(function ($item) use ($transaksi) {
+                return $item->id === $transaksi->id
+                    && $item->status === Transaksi::STATUS_BELUM_BAYAR;
+            })->values();
+        }
 
+        return $source->filter(function ($item) use ($transaksi) {
             return $item->nomeja === $transaksi->nomeja
-                && $item->status !== Transaksi::STATUS_LUNAS;
+                && $item->status === Transaksi::STATUS_BELUM_BAYAR;
         })->values();
     }
 

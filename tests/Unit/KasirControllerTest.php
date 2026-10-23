@@ -36,7 +36,7 @@ class KasirControllerTest extends TestCase
         $this->assertSame(101, $result->first()->id);
     }
 
-    public function test_receipt_includes_all_unpaid_transactions_in_same_table_group(): void
+    public function test_receipt_keeps_unpaid_transactions_separate_even_at_same_table(): void
     {
         $controller = new class extends KasirController {
             public function __construct()
@@ -51,19 +51,19 @@ class KasirControllerTest extends TestCase
 
         $selectedTransaksi = new Transaksi([
             'nomeja' => '10',
-            'status' => 'sedang_diproses',
+            'status' => 'belum_bayar',
         ]);
         $selectedTransaksi->forceFill(['id' => 201]);
 
         $relatedTransaksi = new Transaksi([
             'nomeja' => '10',
-            'status' => 'makanan_siap',
+            'status' => 'belum_bayar',
         ]);
         $relatedTransaksi->forceFill(['id' => 202]);
 
         $anotherTableTransaksi = new Transaksi([
             'nomeja' => '11',
-            'status' => 'sedang_diproses',
+            'status' => 'belum_bayar',
         ]);
         $anotherTableTransaksi->forceFill(['id' => 203]);
 
@@ -72,11 +72,45 @@ class KasirControllerTest extends TestCase
             collect([$selectedTransaksi, $relatedTransaksi, $anotherTableTransaksi])
         );
 
-        $this->assertCount(2, $result);
-        $this->assertEqualsCanonicalizing([201, 202], $result->pluck('id')->all());
+        $this->assertCount(1, $result);
+        $this->assertSame(201, $result->first()->id);
     }
 
-    public function test_receipt_can_compare_paid_at_when_it_is_a_string(): void
+    public function test_receipt_keeps_unassigned_table_orders_separate(): void
+    {
+        $controller = new class extends KasirController {
+            public function __construct()
+            {
+            }
+
+            public function resolveReceiptTransaksisForTest(Transaksi $transaksi, $transaksis = null)
+            {
+                return $this->getReceiptTransaksis($transaksi, $transaksis);
+            }
+        };
+
+        $selectedTransaksi = new Transaksi([
+            'nomeja' => null,
+            'status' => Transaksi::STATUS_BELUM_BAYAR,
+        ]);
+        $selectedTransaksi->forceFill(['id' => 211]);
+
+        $anotherUnassignedTransaksi = new Transaksi([
+            'nomeja' => null,
+            'status' => Transaksi::STATUS_BELUM_BAYAR,
+        ]);
+        $anotherUnassignedTransaksi->forceFill(['id' => 212]);
+
+        $result = $controller->resolveReceiptTransaksisForTest(
+            $selectedTransaksi,
+            collect([$selectedTransaksi, $anotherUnassignedTransaksi])
+        );
+
+        $this->assertCount(1, $result);
+        $this->assertSame(211, $result->first()->id);
+    }
+
+    public function test_receipt_keeps_paid_transactions_separate_when_paid_at_matches(): void
     {
         $controller = new class extends KasirController {
             public function __construct()
@@ -117,8 +151,8 @@ class KasirControllerTest extends TestCase
             collect([$selectedTransaksi, $samePaidAtTransaksi, $differentPaidAtTransaksi])
         );
 
-        $this->assertCount(2, $result);
-        $this->assertEqualsCanonicalizing([301, 302], $result->pluck('id')->all());
+        $this->assertCount(1, $result);
+        $this->assertSame(301, $result->first()->id);
     }
 
     public function test_payment_amount_prefers_persisted_value_when_request_has_no_amount(): void
@@ -142,5 +176,12 @@ class KasirControllerTest extends TestCase
         $transaksi->forceFill(['id' => 401, 'jumlah_bayar' => 150000.00]);
 
         $this->assertSame(150000.0, $controller->resolvePaymentAmountForTest($request, $transaksi, 120000.0));
+    }
+
+    public function test_transaction_status_labels_only_show_unpaid_or_paid(): void
+    {
+        $this->assertSame('Belum Bayar', Transaksi::transaksiStatusLabel(Transaksi::STATUS_BELUM_BAYAR));
+        $this->assertSame('Belum Lunas', Transaksi::kasirStatusLabel(Transaksi::STATUS_BELUM_BAYAR));
+        $this->assertSame('Lunas', Transaksi::kasirStatusLabel(Transaksi::STATUS_LUNAS));
     }
 }

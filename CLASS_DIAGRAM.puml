@@ -49,13 +49,11 @@ class Transaksi {
   -status
   -metode_pembayaran
   -paid_at
-  +kokiStatusLabel(status): string
+  +STATUS_BELUM_BAYAR
+  +STATUS_LUNAS
   +transaksiStatusLabel(status): string
   +kasirStatusLabel(status): string
   +details()
-  +isBeingProcessed(): bool
-  +isOnlineOrder(): bool
-  +isAlreadyPaidOnline(): bool
 }
 
 class DetailTransaksi {
@@ -66,19 +64,9 @@ class DetailTransaksi {
   -harga
   -subtotal
   -note
-  -menu_status
-  -ready_at
   +menu()
   +getEstimasiMenitAttribute()
   +transaksi()
-  +menuStatusLabel(status): string
-}
-
-class Koki {
-  -id
-  -nomeja
-  -menu
-  -status
 }
 
 class Order {

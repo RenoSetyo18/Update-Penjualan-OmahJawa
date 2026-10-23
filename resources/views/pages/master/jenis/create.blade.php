@@ -6,7 +6,7 @@
             <h1>Tambah Jenis Menu</h1>
         </div>
         <div class="col-sm-6 text-right">
-            <a href="{{ route('jenis.index') }}" class="btn btn-secondary">
+            <a href="{{ route('jenis.index') }}" class="btn btn-secondary btn-back-action">
                 <i class="fas fa-arrow-left"></i> Kembali
             </a>
         </div>

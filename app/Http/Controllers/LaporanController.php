@@ -86,6 +86,24 @@ class LaporanController extends Controller
         return redirect()->route('laporan.penjualan');
     }
 
+    public function harian(Request $request)
+    {
+        $validated = $request->validate([
+            'tanggal' => 'sometimes|required|date_format:Y-m-d',
+        ]);
+
+        $tanggal = $validated['tanggal'] ?? Carbon::today()->toDateString();
+        $transaksis = Transaksi::with('details.menu')
+            ->where('status', Transaksi::STATUS_LUNAS)
+            ->whereDate('paid_at', $tanggal)
+            ->orderBy('paid_at')
+            ->get();
+
+        $totalPendapatan = $transaksis->sum('totalharga');
+
+        return view('pages.laporan.harian', compact('transaksis', 'tanggal', 'totalPendapatan'));
+    }
+
     public function transaksi(Request $request)
     {
         $query = Transaksi::query();
@@ -220,7 +238,7 @@ class LaporanController extends Controller
         $end = $request->get('end_date', Carbon::now()->toDateString());
         $perPage = in_array($request->input('per_page'), [5, 10, 25, 50]) ? $request->input('per_page') : 10;
 
-        $query = Transaksi::query();
+        $query = Transaksi::where('status', Transaksi::STATUS_LUNAS);
         if ($request->filled('start_date')) {
             $query->whereDate('created_at', '>=', $start);
         }
@@ -246,6 +264,7 @@ class LaporanController extends Controller
         $query = DetailTransaksi::selectRaw('menu_id, SUM(jumlah) as total_jumlah, SUM(subtotal) as total_pendapatan')
             ->with(['menu.jenis'])
             ->join('transaksis', 'detail_transaksis.transaksi_id', '=', 'transaksis.id')
+            ->where('transaksis.status', Transaksi::STATUS_LUNAS)
             ->groupBy('menu_id')
             ->orderByDesc('total_jumlah');
 
@@ -268,6 +287,7 @@ class LaporanController extends Controller
         $end = $request->get('end_date', Carbon::now()->toDateString());
 
         $query = Transaksi::selectRaw('nomeja, SUM(totalharga) as total_pendapatan, COUNT(*) as jumlah_transaksi')
+            ->where('status', Transaksi::STATUS_LUNAS)
             ->groupBy('nomeja')
             ->orderByDesc('total_pendapatan');
 
@@ -315,7 +335,7 @@ class LaporanController extends Controller
         $end = $request->get('end_date', Carbon::now()->toDateString());
         $namaPencetak = auth()->user()->name ?? auth()->user()->nama ?? 'Administrator';
 
-        $query = Transaksi::query();
+        $query = Transaksi::where('status', Transaksi::STATUS_LUNAS);
         if ($request->filled('start_date')) {
             $query->whereDate('created_at', '>=', $start);
         }
@@ -328,7 +348,7 @@ class LaporanController extends Controller
         $totalPenjualan = $summaryQuery->sum('totalharga');
         $jumlahTransaksi = $summaryQuery->count();
     $rataRataPenjualan = $jumlahTransaksi > 0 ? $totalPenjualan / $jumlahTransaksi : 0;
-    $jumlahTransaksiLunas = $summaryQuery->whereIn('status', [Transaksi::STATUS_LUNAS, Transaksi::STATUS_SELESAI])->count();
+    $jumlahTransaksiLunas = $summaryQuery->count();
     $monthlySummary = $this->buildMonthlySalesSummary($transaksis);
         $logoBase64 = $this->getImageBase64('dataset/dist/img/LogoOmahJawa.png');
 

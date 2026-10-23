@@ -104,14 +104,14 @@ php artisan db:seed --class=JenisSeeder
     - ✅ Tambah karyawan baru (input nama, email, password, role/hak akses)
     - ✅ Edit data karyawan
     - ✅ Hapus karyawan
-    - ✅ Role/Hak Akses: Admin, Koki, Kasir, Manajer
+    - ✅ Role/Hak Akses: Admin, Kasir, Pelayan, Super Admin
 
 **Form Fields**:
 
 - Nama Karyawan
 - Email
 - Password (dienkripsi otomatis)
-- Role/Hak Akses (Admin, Koki, Kasir, Manajer)
+- Role/Hak Akses (Admin, Kasir, Pelayan, Super Admin)
 
 ### Master Jenis Menu
 
@@ -149,8 +149,8 @@ php artisan db:seed --class=JenisSeeder
 | Role    | Deskripsi                             |
 | ------- | ------------------------------------- |
 | Admin   | Akses penuh ke semua fitur            |
-| Koki    | Akses untuk melihat dan membuat order |
-| Kasir   | Akses untuk transaksi dan pembayaran  |
+| Pelayan | Akses untuk input pesanan             |
+| Kasir   | Akses untuk konfirmasi pembayaran     |
 | Manajer | Akses untuk laporan dan manajemen     |
 
 ## 📊 Database Schema
@@ -197,7 +197,7 @@ User (Many) ←─ Role (Stored in users.role field)
 - Nama: Required, string, max 255
 - Email: Required, email, unique
 - Password: Required, min 6, confirm
-- Role: Required, in (admin, koki, kasir, manajer)
+- Role: Required, in (admin, super_admin, kasir, pelayan)
 
 ### Master Jenis
 

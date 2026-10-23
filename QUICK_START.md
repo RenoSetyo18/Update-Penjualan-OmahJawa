@@ -61,7 +61,7 @@ Buka di browser (sesuaikan domain Anda):
 
 ### Master Karyawan
 
-- Tambah karyawan dengan role: Admin, Koki, Kasir, Manajer
+- Tambah karyawan dengan role: Admin, Kasir, Pelayan, Super Admin
 - Edit nama, email, role
 - Hapus karyawan
 

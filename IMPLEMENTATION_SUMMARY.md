@@ -162,7 +162,7 @@ Buka di browser:
 - ✅ Tambah karyawan baru
 - ✅ Edit data karyawan
 - ✅ Hapus karyawan
-- ✅ Pengaturan role/hak akses (Admin, Koki, Kasir, Manajer)
+- ✅ Pengaturan role/hak akses (Admin, Kasir, Pelayan, Super Admin)
 - ✅ Input email dan password (dienkripsi)
 
 **Validasi**:
@@ -170,7 +170,7 @@ Buka di browser:
 - Nama: Required, string, max 255
 - Email: Required, email, unique
 - Password: Required, min 6 karakter, confirm
-- Role: Required, pilihan (admin, koki, kasir, manajer)
+- Role: Required, pilihan (admin, super_admin, kasir, pelayan)
 
 ---
 

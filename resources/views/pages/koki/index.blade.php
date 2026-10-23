@@ -158,7 +158,9 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <p><strong>Nomor Meja:</strong> {{ $item->nomeja }}</p>
+                @if($item->nomeja !== null)
+                    <p><strong>Nomor Meja:</strong> {{ $item->nomeja }}</p>
+                @endif
                 <p><strong>Atas Nama:</strong> {{ $item->atasnama }}</p>
                 <p><strong>Status Transaksi:</strong>
                     @switch($item->status)
@@ -204,7 +206,6 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <?php
                                     @if($item->id === $nextPendingId && !$activeProcessing)
                                         <form action="{{ route('transaksi.updateStatus', $item->id) }}" method="POST">
                                             @csrf
@@ -218,7 +219,9 @@
                                             <i class="fas fa-check"></i> Siap
                                         </button>
                                     @else
-                                        <button class="btn btn-sm btn-secondary" disabled>-</button>
+                                        <button type="button" class="btn btn-sm btn-unavailable-action" disabled aria-label="Belum tersedia" title="Belum tersedia">
+                                            <i class="fas fa-minus" aria-hidden="true"></i>
+                                        </button>
                                     @endif
                                 </td>
                             </tr>

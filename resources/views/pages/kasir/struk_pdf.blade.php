@@ -16,10 +16,15 @@
     <h2 class="center">Cafe Omah Jawa</h2>
     <p class="center"><strong>Struk Pembayaran</strong></p>
 
-    <p><strong>Nomor Meja:</strong> {{ $transaksi->nomeja }}</p>
+    @if($transaksi->nomeja !== null)
+        <p><strong>Nomor Meja:</strong> {{ $transaksi->nomeja }}</p>
+    @endif
     <p><strong>Atas Nama:</strong> {{ $transaksi->atasnama }}</p>
     <p><strong>Tanggal:</strong> {{ date('d-m-Y H:i', strtotime($transaksi->created_at ?? now())) }}</p>
-    <p><strong>Metode Pembayaran:</strong> {{ $transaksi->metode_pembayaran ?? 'Cash' }}</p>
+    <p><strong>Status:</strong> {{ \App\Models\Transaksi::kasirStatusLabel($transaksi->status) }}</p>
+    @if($transaksi->status === \App\Models\Transaksi::STATUS_LUNAS)
+        <p><strong>Metode Pembayaran:</strong> {{ $transaksi->metode_pembayaran ?? 'Cash' }}</p>
+    @endif
 
     <table>
         <thead>
@@ -42,17 +47,27 @@
         </tbody>
         <tfoot>
             <tr>
+                <td colspan="3" class="right">Subtotal</td>
+                <td class="right">Rp{{ number_format(($transaksi->totalharga ?? 0) - ($transaksi->ppn_amount ?? 0), 2) }}</td>
+            </tr>
+            <tr>
+                <td colspan="3" class="right">PPN{{ $transaksi->ppn_rate !== null ? ' (' . number_format($transaksi->ppn_rate, 2) . '%)' : '' }}</td>
+                <td class="right">Rp{{ number_format($transaksi->ppn_amount ?? 0, 2) }}</td>
+            </tr>
+            <tr>
                 <td colspan="3" class="right">Total Harga</td>
                 <td class="right">Rp{{ number_format($transaksi->totalharga ?? 0, 2) }}</td>
             </tr>
-            <tr>
-                <td colspan="3" class="right">Jumlah Bayar</td>
-                <td class="right">Rp{{ number_format(isset($jumlah_bayar) ? $jumlah_bayar : ($transaksi->totalharga ?? 0), 2) }}</td>
-            </tr>
-            <tr>
-                <td colspan="3" class="right">Kembalian</td>
-                <td class="right">Rp{{ number_format(isset($kembalian) ? $kembalian : ((isset($jumlah_bayar) ? $jumlah_bayar : 0) - ($transaksi->totalharga ?? 0)), 2) }}</td>
-            </tr>
+            @if($transaksi->status === \App\Models\Transaksi::STATUS_LUNAS)
+                <tr>
+                    <td colspan="3" class="right">Jumlah Bayar</td>
+                    <td class="right">Rp{{ number_format(isset($jumlah_bayar) ? $jumlah_bayar : ($transaksi->totalharga ?? 0), 2) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="right">Kembalian</td>
+                    <td class="right">Rp{{ number_format(isset($kembalian) ? $kembalian : ((isset($jumlah_bayar) ? $jumlah_bayar : 0) - ($transaksi->totalharga ?? 0)), 2) }}</td>
+                </tr>
+            @endif
         </tfoot>
     </table>
 

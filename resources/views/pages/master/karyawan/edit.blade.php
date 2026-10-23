@@ -6,7 +6,7 @@
             <h1>Edit Karyawan</h1>
         </div>
         <div class="col-sm-6 text-right">
-            <a href="{{ route('karyawan.index') }}" class="btn btn-secondary">
+            <a href="{{ route('karyawan.index') }}" class="btn btn-secondary btn-back-action">
                 <i class="fas fa-arrow-left"></i> Kembali
             </a>
         </div>
@@ -48,7 +48,6 @@
                                 <option value="">-- Pilih Role --</option>
                                 <option value="super_admin" {{ old('role', $karyawan->role) === 'super_admin' ? 'selected' : '' }}>Super Admin</option>
                                 <option value="admin" {{ old('role', $karyawan->role) === 'admin' ? 'selected' : '' }}>Admin</option>
-                                <option value="koki" {{ old('role', $karyawan->role) === 'koki' ? 'selected' : '' }}>Koki</option>
                                 <option value="kasir" {{ old('role', $karyawan->role) === 'kasir' ? 'selected' : '' }}>Kasir</option>
                                 <option value="pelayan" {{ old('role', $karyawan->role) === 'pelayan' ? 'selected' : '' }}>Pelayan</option>
                             </select>

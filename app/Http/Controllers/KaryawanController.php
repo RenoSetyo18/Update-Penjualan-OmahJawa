@@ -31,7 +31,7 @@ class KaryawanController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|in:super_admin,admin,koki,kasir,pelayan',
+            'role' => 'required|in:super_admin,admin,kasir,pelayan',
         ]);
 
         User::create([
@@ -54,7 +54,7 @@ class KaryawanController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $karyawan->id,
-            'role' => 'required|in:super_admin,admin,koki,kasir,pelayan',
+            'role' => 'required|in:super_admin,admin,kasir,pelayan',
             'password' => 'nullable|string|min:6|confirmed',
         ]);
 

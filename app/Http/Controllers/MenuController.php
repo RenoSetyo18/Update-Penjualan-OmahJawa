@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Menu;
-use Illuminate\Support\Facades\DB;
+use App\Models\Jenis;
+use App\Models\PpnSetting;
 use Illuminate\Support\Facades\Log;
 
 class MenuController extends Controller
@@ -16,10 +17,19 @@ class MenuController extends Controller
 
     public function index()
     {
-        $menus = DB::table('menus')->where('active', 1)->get();
+        $menus = Menu::query()
+            ->with('jenis')
+            ->where('active', 1)
+            ->orderBy('nama')
+            ->get();
+        $jenisList = Jenis::query()->orderBy('nama_jenis')->get();
+        $ppnSetting = PpnSetting::query()->findOrFail(1);
 
         return view('pages.menu.index', [
             'menus' => $menus,
+            'jenisList' => $jenisList,
+            'ppnRate' => $ppnSetting->is_enabled ? $ppnSetting->rate : 0,
+            'ppnEnabled' => $ppnSetting->is_enabled,
         ]);
     }
 

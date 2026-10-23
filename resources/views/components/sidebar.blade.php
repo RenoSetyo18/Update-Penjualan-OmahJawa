@@ -1,18 +1,80 @@
-<aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #4D55CC; color: white; position: fixed !important; top: 0; left: 0; height: 100vh !important; overflow-y: auto; z-index: 1030;">
+<aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #4D55CC; color: white;">
     <style>
-        @media (min-width: 768px) {
-            .content-wrapper {
-                margin-left: 250px !important;
+        .main-sidebar {
+            background: linear-gradient(180deg, #1f4034 0%, #152d25 100%) !important;
+            box-shadow: 8px 0 28px rgba(17, 35, 27, 0.14) !important;
+            scrollbar-color: rgba(255, 255, 255, 0.28) transparent;
+            scrollbar-width: thin;
+        }
+        @media (max-width: 992px) {
+            body.sidebar-open #sidebar-overlay {
+                display: block;
+            }
+            .main-sidebar {
+                position: fixed !important;
+                top: 0;
+                left: 0;
+                width: min(250px, 85vw) !important;
+                max-width: 85vw;
+                height: 100vh !important;
+                margin-left: 0;
+                overflow-y: auto;
+                transform: translateX(-100%);
+                z-index: 1050;
+                transition: transform 0.3s ease-in-out;
+                box-shadow: none !important;
+                -webkit-overflow-scrolling: touch;
+            }
+            body.sidebar-open .main-sidebar {
+                transform: translateX(0);
+                box-shadow: 8px 0 28px rgba(17, 35, 27, 0.2) !important;
             }
         }
-        @media (max-width: 767.98px) {
-            .main-sidebar {
-                position: relative !important;
-                height: auto !important;
-            }
-            .content-wrapper {
-                margin-left: 0 !important;
-            }
+        .main-sidebar .user-panel {
+            margin: 1rem 0.75rem 1.25rem !important;
+            padding: 0.75rem 0 1.1rem !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.14) !important;
+        }
+        .main-sidebar .user-panel img {
+            border: 3px solid rgba(255, 255, 255, 0.24);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2) !important;
+        }
+        .main-sidebar .user-panel .info a {
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+        }
+        .main-sidebar .nav-sidebar {
+            padding: 0 0.65rem 1rem;
+        }
+        .main-sidebar .nav-sidebar .nav-link {
+            margin: 0.16rem 0;
+            border-radius: 9px;
+            color: rgba(246, 249, 246, 0.8) !important;
+            transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+        }
+        .main-sidebar .nav-sidebar .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            color: #fff !important;
+            transform: translateX(2px);
+        }
+        .main-sidebar .nav-sidebar .nav-link.active,
+        .main-sidebar .nav-sidebar .menu-open > .nav-link {
+            background: linear-gradient(115deg, #d4b477 0%, #c7a56a 100%) !important;
+            color: #1d3429 !important;
+            box-shadow: 0 5px 14px rgba(0, 0, 0, 0.16);
+            font-weight: 700;
+        }
+        .main-sidebar .nav-sidebar .nav-link.active .nav-icon,
+        .main-sidebar .nav-sidebar .menu-open > .nav-link .nav-icon {
+            color: #1d3429 !important;
+        }
+        .main-sidebar .nav-treeview {
+            margin: 0.2rem 0 0.45rem;
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .main-sidebar .nav-treeview .nav-link {
+            font-size: 0.92rem;
         }
     </style>
     <div class="sidebar">
@@ -23,18 +85,6 @@
         </div>
         <div class="info mt-2">
           <a href="#" class="d-block" style="color: white;">OMAH JAWA</a>
-        </div>
-      </div>
-
-      <!-- Search -->
-      <div class="form-inline">
-        <div class="input-group" data-widget="sidebar-search">
-          <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search" style="background-color: white; color: black;">
-          <div class="input-group-append">
-            <button class="btn btn-sidebar" style="background-color: white;">
-              <i class="fas fa-search fa-fw" style="color: black;"></i>
-            </button>
-          </div>
         </div>
       </div>
 
@@ -66,6 +116,12 @@
                 </a>
               </li>
               <li class="nav-item">
+                <a href="{{ route('master-ppn.index') }}" class="nav-link {{ request()->is('master/ppn') ? 'active' : '' }}" style="color: white; {{ request()->is('master/ppn') ? 'background-color: #007bff;' : '' }}">
+                  <i class="nav-icon fas fa-percent"></i>
+                  <p>PPN</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="{{ route('jenis.index') }}" class="nav-link {{ request()->is('jenis*') ? 'active' : '' }}" style="color: white; {{ request()->is('jenis*') ? 'background-color: #007bff;' : '' }}">
                   <i class="nav-icon fas fa-list-alt"></i>
                   <p>Jenis Menu</p>
@@ -86,21 +142,9 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{{ route('transaksi.index') }}" class="nav-link {{ request()->is('transaksi') ? 'active' : '' }}" style="color: white;">
-              <i class="nav-icon fas fa-exchange-alt"></i>
-              <p>Transaksi</p>
-            </a>
-          </li>
-          <li class="nav-item">
             <a href="{{ route('kasir.index') }}" class="nav-link {{ request()->is('kasir') ? 'active' : '' }}" style="color: white;">
               <i class="nav-icon fas fa-cash-register"></i>
               <p>Kasir</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('koki.index') }}" class="nav-link {{ request()->is('koki') ? 'active' : '' }}" style="color: white;">
-              <i class="nav-icon fas fa-user-tie"></i>
-              <p>Koki</p>
             </a>
           </li>
           <li class="nav-item has-treeview {{ request()->is('laporan*') ? 'menu-open' : '' }}">
@@ -156,6 +200,12 @@
                 </a>
               </li>
               <li class="nav-item">
+                <a href="{{ route('master-ppn.index') }}" class="nav-link {{ request()->is('master/ppn') ? 'active' : '' }}" style="color: white; {{ request()->is('master/ppn') ? 'background-color: #007bff;' : '' }}">
+                  <i class="nav-icon fas fa-percent"></i>
+                  <p>PPN</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="{{ route('jenis.index') }}" class="nav-link {{ request()->is('jenis*') ? 'active' : '' }}" style="color: white; {{ request()->is('jenis*') ? 'background-color: #007bff;' : '' }}">
                   <i class="nav-icon fas fa-list-alt"></i>
                   <p>Jenis Menu</p>
@@ -206,12 +256,6 @@
               <p>Menu</p>
             </a>
           </li>
-          <li class="nav-item">
-            <a href="{{ route('transaksi.index') }}" class="nav-link {{ request()->is('transaksi') ? 'active' : '' }}" style="color: white;">
-              <i class="nav-icon fas fa-exchange-alt"></i>
-              <p>Transaksi</p>
-            </a>
-          </li>
           @endif
 
           {{-- Kasir --}}
@@ -232,22 +276,6 @@
             <a href="{{ route('kasir.index') }}" class="nav-link {{ request()->is('kasir') ? 'active' : '' }}" style="color: white;">
               <i class="nav-icon fas fa-cash-register"></i>
               <p>Kasir</p>
-            </a>
-          </li>
-          @endif
-
-          {{-- Koki --}}
-          @if(Auth::check() && Auth::user()->role === 'koki')
-          <li class="nav-item">
-            <a href="{{ route('dashboard.index') }}" class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}" style="color: white;">
-              <i class="nav-icon fas fa-home"></i>
-              <p>Dashboard</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('koki.index') }}" class="nav-link {{ request()->is('koki') ? 'active' : '' }}" style="color: white;">
-              <i class="nav-icon fas fa-user-tie"></i>
-              <p>Koki</p>
             </a>
           </li>
           @endif

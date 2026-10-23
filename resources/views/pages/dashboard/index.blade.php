@@ -7,14 +7,18 @@
             <small class="text-muted" id="currentDateTime"></small>
         </div>
         <div class="col-sm-6 text-right">
-            <form action="{{ route('dashboard.index') }}" method="GET" class="d-flex align-items-center justify-content-end">
-                <label for="startDate" class="mb-0 mr-2 font-weight-bold">Dari:</label>
-                <input type="date" name="startDate" id="startDate" class="form-control d-inline-block w-auto mr-2"
-                    value="{{ $startDate }}">
-                <label for="endDate" class="mb-0 mr-2 font-weight-bold">Sampai:</label>
-                <input type="date" name="endDate" id="endDate" class="form-control d-inline-block w-auto mr-2"
-                    value="{{ $endDate }}">
-                <button type="submit" class="btn btn-primary">Tampilkan</button>
+            <form action="{{ route('dashboard.index') }}" method="GET" class="dashboard-filter-form">
+                <div class="dashboard-filter-field">
+                    <label for="startDate" class="font-weight-bold">Dari:</label>
+                    <input type="date" name="startDate" id="startDate" class="form-control" value="{{ $startDate }}">
+                </div>
+                <div class="dashboard-filter-field">
+                    <label for="endDate" class="font-weight-bold">Sampai:</label>
+                    <input type="date" name="endDate" id="endDate" class="form-control" value="{{ $endDate }}">
+                </div>
+                <button type="submit" class="btn btn-primary dashboard-filter-button">
+                    <i class="fas fa-filter mr-1"></i>Tampilkan
+                </button>
             </form>
         </div>
     </div>
@@ -126,11 +130,269 @@
     position: relative;
     z-index: 2;
 }
-        }
-        @media (max-width: 992px) {
-            .card { border-radius: 8px; }
-            .card-body { padding: 1rem; }
-        }
+@media (max-width: 992px) {
+    .card { border-radius: 8px; }
+    .card-body { padding: 1rem; }
+}
+.dashboard-filter-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 0.6rem;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 0.55rem;
+    border: 1px solid #e3eae5;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 5px 16px rgba(28, 48, 39, 0.06);
+}
+.dashboard-filter-field {
+    min-width: 0;
+}
+.dashboard-filter-form .dashboard-filter-field label {
+    display: block;
+    margin: 0 0 0.35rem;
+    color: #596a60;
+    font-size: 0.9rem;
+}
+.dashboard-filter-form .form-control {
+    width: 100%;
+    min-width: 0;
+    min-height: 38px;
+    border-color: #e1e8e3;
+    border-radius: 8px;
+    background: #f9fbf9;
+}
+.dashboard-filter-form .form-control:focus {
+    border-color: #7da58d;
+    background: #fff;
+    box-shadow: 0 0 0 0.2rem rgba(57, 111, 78, 0.12);
+}
+.dashboard-filter-button {
+    justify-self: stretch;
+    min-width: 0;
+    min-height: 38px;
+    margin: 0;
+    padding: 0.45rem 0.8rem;
+    border: 0 !important;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #3b6a50, #274a37) !important;
+    box-shadow: 0 5px 12px rgba(49, 93, 70, 0.2);
+    letter-spacing: 0.01em;
+}
+.dashboard-filter-button:hover,
+.dashboard-filter-button:focus {
+    background: linear-gradient(135deg, #315d46, #1f3e2d) !important;
+    box-shadow: 0 7px 16px rgba(49, 93, 70, 0.28);
+    transform: translateY(-1px);
+}
+@media (max-width: 1199.98px) {
+    .dashboard-filter-form {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .dashboard-filter-button {
+        grid-column: 1 / -1;
+    }
+}
+.dashboard-metric-card {
+    position: relative;
+    min-height: 164px;
+    overflow: hidden;
+    border: 1px solid #e5ebe6;
+    border-radius: 16px;
+    background: #fff;
+    color: #263a30;
+    box-shadow: 0 8px 24px rgba(28, 48, 39, 0.07);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.dashboard-metric-card::after {
+    position: absolute;
+    right: -30px;
+    bottom: -62px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: var(--metric-tint);
+    content: '';
+    pointer-events: none;
+}
+.dashboard-metric-card:hover,
+.dashboard-metric-card:focus-within {
+    transform: translateY(-4px);
+    border-color: var(--metric-border);
+    box-shadow: 0 15px 30px rgba(28, 48, 39, 0.12);
+}
+.dashboard-metric-card.metric-transactions {
+    --metric-color: #315d46;
+    --metric-tint: rgba(49, 93, 70, 0.08);
+    --metric-border: #c9ddce;
+    --metric-icon-bg: #edf5ef;
+}
+.dashboard-metric-card.metric-revenue {
+    --metric-color: #92733f;
+    --metric-tint: rgba(199, 165, 106, 0.12);
+    --metric-border: #e8dcc4;
+    --metric-icon-bg: #f8f2e7;
+}
+.dashboard-metric-card.metric-best-seller {
+    --metric-color: #527d68;
+    --metric-tint: rgba(82, 125, 104, 0.1);
+    --metric-border: #d1e1d6;
+    --metric-icon-bg: #eff6f1;
+}
+.dashboard-metric-card.metric-daily-chart {
+    --metric-color: #596b60;
+    --metric-tint: rgba(89, 107, 96, 0.08);
+    --metric-border: #d9e1db;
+    --metric-icon-bg: #f0f4f1;
+}
+.dashboard-metric-card .card-body {
+    position: relative;
+    z-index: 1;
+    min-height: 164px;
+    padding: 1.25rem !important;
+    text-align: left !important;
+}
+.dashboard-metric-card .metric-icon {
+    display: inline-flex;
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    border: 1px solid var(--metric-border);
+    border-radius: 14px;
+    background: var(--metric-icon-bg);
+    color: var(--metric-color);
+    font-size: 1.1rem;
+}
+.dashboard-metric-card .metric-label {
+    margin-bottom: 0.35rem;
+    color: #748078;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+}
+.dashboard-metric-card .metric-value {
+    margin-bottom: 0.3rem;
+    color: #263a30;
+    font-size: clamp(1.35rem, 1.7vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+}
+.dashboard-metric-card .metric-note {
+    color: #89938c;
+    font-size: 0.83rem;
+}
+.dashboard-metric-card .metric-arrow {
+    position: absolute;
+    top: 1.45rem;
+    right: 1.25rem;
+    color: #a1aaa3;
+    font-size: 0.85rem;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+.dashboard-metric-card:hover .metric-arrow {
+    transform: translateX(3px);
+    color: var(--metric-color);
+}
+.dashboard-chart-card {
+    overflow: hidden;
+    border: 1px solid #e5ebe6;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 10px 28px rgba(28, 48, 39, 0.07);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.dashboard-chart-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 34px rgba(28, 48, 39, 0.11);
+}
+.dashboard-chart-card .card-header {
+    position: relative;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #edf1ed;
+    background: linear-gradient(135deg, #fff 0%, #f8faf8 100%) !important;
+}
+.dashboard-chart-card .card-header .card-title {
+    display: flex;
+    align-items: center;
+    color: #30483a;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.4;
+}
+.dashboard-chart-card .card-header .card-title i {
+    display: inline-flex;
+    width: 34px;
+    height: 34px;
+    margin-right: 0.65rem !important;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #edf5ef;
+    color: #315d46;
+    font-size: 0.9rem;
+}
+.dashboard-chart-card .card-body {
+    padding: 1.25rem;
+}
+.dashboard-chart-card .chart-container {
+    min-height: 320px;
+    padding: 0.9rem 0.75rem 0.35rem;
+    border: 1px solid #edf2ee;
+    border-radius: 14px;
+    background: linear-gradient(145deg, #fbfdfb 0%, #f6f9f6 100%);
+}
+.dashboard-chart-card .chart-container canvas {
+    display: block;
+}
+.dashboard-chart-summary {
+    padding: 0.9rem 1rem;
+    border: 1px solid #e8efe9;
+    border-radius: 12px;
+    background: #f8fbf8;
+}
+.dashboard-chart-summary h6 {
+    color: #758178;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+.dashboard-chart-summary h3,
+.dashboard-chart-summary h5 {
+    color: #315d46;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+}
+@media (max-width: 767.98px) {
+    .dashboard-filter-form {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        margin-top: 0.75rem;
+        padding: 0.75rem;
+    }
+    .dashboard-filter-button {
+        grid-column: 1 / -1;
+    }
+    .dashboard-chart-card .chart-container {
+        min-height: 280px;
+    }
+}
+@media (max-width: 399.98px) {
+    .dashboard-filter-form {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .dashboard-filter-button {
+        grid-column: auto;
+    }
+}
     </style>
 @endsection
 
@@ -177,76 +439,7 @@
 
     </div>
 
-    @if($role === 'koki')
-        <div class="row mb-4">
-            <div class="col-lg-4 col-md-6 mb-3">
-                <div class="card bg-danger text-white h-100 shadow">
-                    <div class="card-body text-center d-flex flex-column justify-content-center align-items-center" style="min-height: 150px;">
-                        <i class="fas fa-hourglass-start fa-2x mb-2"></i>
-                        <h5 class="card-title">Belum Diproses</h5>
-                        <h3 class="mb-1">{{ $kokiStatusBelum }}</h3>
-                        <small>Pesanan yang menunggu dimulai</small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 mb-3">
-                <div class="card bg-warning text-white h-100 shadow">
-                    <div class="card-body text-center d-flex flex-column justify-content-center align-items-center" style="min-height: 150px;">
-                        <i class="fas fa-fire fa-2x mb-2"></i>
-                        <h5 class="card-title">Sedang Diproses</h5>
-                        <h3 class="mb-1">{{ $kokiStatusSedang }}</h3>
-                        <small>Pesanan yang sedang dikerjakan</small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 mb-3">
-                <div class="card bg-success text-white h-100 shadow">
-                    <div class="card-body text-center d-flex flex-column justify-content-center align-items-center" style="min-height: 150px;">
-                        <i class="fas fa-check-circle fa-2x mb-2"></i>
-                        <h5 class="card-title">Selesai</h5>
-                        <h3 class="mb-1">{{ $kokiStatusSelesai }}</h3>
-                        <small>Pesanan yang sudah siap</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card shadow">
-            <div class="card-header bg-light">
-                <h5 class="card-title mb-0"><i class="fas fa-list mr-2"></i>Pesanan Belum Selesai</h5>
-            </div>
-            <div class="card-body table-responsive">
-                <table class="table table-striped table-sm mb-0">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Kode</th>
-                            <th>Atas Nama</th>
-                            <th>Status</th>
-                            <th>Meja</th>
-                            <th class="text-right">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($kokiUnfinishedOrders as $index => $order)
-                            <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td>{{ $order->kode }}</td>
-                                <td>{{ $order->atasnama }}</td>
-                                <td>{{ \App\Models\Transaksi::kokiStatusLabel($order->status) }}</td>
-                                <td>{{ $order->nomeja }}</td>
-                                <td class="text-right">Rp {{ number_format($order->totalharga, 0, ',', '.') }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center">Tidak ada pesanan belum selesai.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    @elseif($role === 'kasir')
+    @if($role === 'kasir')
         <div class="row mb-4">
             <div class="col-lg-3 col-md-6 mb-3">
                 <a href="{{ route('kasir.index') }}" class="text-decoration-none text-white">
@@ -323,7 +516,7 @@
                                     <td>{{ $item->atasnama ?? '-' }}</td>
                                     <td>
                                         <span class="badge badge-warning text-dark">
-                                            {{ $item->isOnlineOrder() ? 'Pesanan Online' : \App\Models\Transaksi::kasirStatusLabel($item->status) }}
+                                            {{ \App\Models\Transaksi::kasirStatusLabel($item->status) }}
                                         </span>
                                     </td>
                                     <td>Rp {{ number_format($item->totalharga ?? 0, 0, ',', '.') }}</td>
@@ -340,11 +533,11 @@
             </div>
         </div>
     @else
-        @if(($transaksiBelumDiproses ?? 0) > 0)
+        @if(($transaksiBelumBayar ?? 0) > 0)
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 <i class="fas fa-exclamation-triangle mr-2"></i>
-                <strong>Perhatian!</strong> Ada <strong>{{ $transaksiBelumDiproses }}</strong> transaksi yang belum diproses.
-                <a href="{{ route('transaksi.index') }}" class="alert-link">Kelola sekarang</a>
+                <strong>Perhatian!</strong> Ada <strong>{{ $transaksiBelumBayar }}</strong> transaksi yang belum dibayar.
+                <a href="{{ route('kasir.index') }}" class="alert-link">Kelola di Kasir</a>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -354,48 +547,52 @@
         <div class="row mb-4">
             <div class="col-lg-3 col-md-6 mb-3">
                 <a href="{{ route('laporan.penjualan') }}" class="text-decoration-none">
-                    <div class="card bg-warning text-white h-100 shadow" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='';">
-                        <div class="card-body text-center d-flex flex-column justify-content-center align-items-center" style="min-height: 150px;">
-                            <i class="fas fa-shopping-cart fa-2x mb-2"></i>
-                            <h5 class="card-title">Total Transaksi</h5>
-                            <h3 class="mb-1">{{ $totalTransaksi }}</h3>
-                            <small>Total transaksi periode ini</small>
+                    <div class="card dashboard-metric-card metric-transactions h-100">
+                        <div class="card-body">
+                            <i class="fas fa-arrow-right metric-arrow" aria-hidden="true"></i>
+                            <span class="metric-icon"><i class="fas fa-receipt" aria-hidden="true"></i></span>
+                            <div class="metric-label">Total Transaksi</div>
+                            <div class="metric-value">{{ $totalTransaksi }}</div>
+                            <small class="metric-note">Total transaksi periode ini</small>
                         </div>
                     </div>
                 </a>
             </div>
             <div class="col-lg-3 col-md-6 mb-3">
                 <a href="{{ route('laporan.penjualan') }}" class="text-decoration-none">
-                    <div class="card bg-success text-white h-100 shadow" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='';">
-                        <div class="card-body text-center d-flex flex-column justify-content-center align-items-center" style="min-height: 150px;">
-                            <i class="fas fa-dollar-sign fa-2x mb-2"></i>
-                            <h5 class="card-title">Pendapatan</h5>
-                            <h3 class="mb-1">Rp{{ number_format($totalPendapatanLunas, 0, ',', '.') }}</h3>
-                            <small>Dari transaksi lunas</small>
+                    <div class="card dashboard-metric-card metric-revenue h-100">
+                        <div class="card-body">
+                            <i class="fas fa-arrow-right metric-arrow" aria-hidden="true"></i>
+                            <span class="metric-icon"><i class="fas fa-wallet" aria-hidden="true"></i></span>
+                            <div class="metric-label">Pendapatan</div>
+                            <div class="metric-value">Rp{{ number_format($totalPendapatanLunas, 0, ',', '.') }}</div>
+                            <small class="metric-note">Dari transaksi lunas</small>
                         </div>
                     </div>
                 </a>
             </div>
             <div class="col-lg-3 col-md-6 mb-3">
                 <a href="javascript:void(0)" onclick="scrollToDashboardCharts()" class="text-decoration-none">
-                    <div class="card bg-info text-white h-100 shadow" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='';">
-                        <div class="card-body text-center d-flex flex-column justify-content-center align-items-center" style="min-height: 150px;">
-                            <i class="fas fa-star fa-2x mb-2"></i>
-                            <h5 class="card-title">Menu Paling Laris</h5>
-                            <h3 class="mb-1">Top 3</h3>
-                            <small>Periode ini</small>
+                    <div class="card dashboard-metric-card metric-best-seller h-100">
+                        <div class="card-body">
+                            <i class="fas fa-arrow-right metric-arrow" aria-hidden="true"></i>
+                            <span class="metric-icon"><i class="fas fa-award" aria-hidden="true"></i></span>
+                            <div class="metric-label">Menu Paling Laris</div>
+                            <div class="metric-value">Top 3</div>
+                            <small class="metric-note">Periode ini</small>
                         </div>
                     </div>
                 </a>
             </div>
             <div class="col-lg-3 col-md-6 mb-3">
                 <a href="javascript:void(0)" onclick="scrollToDashboardCharts()" class="text-decoration-none">
-                    <div class="card bg-secondary text-white h-100 shadow" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='';">
-                        <div class="card-body text-center d-flex flex-column justify-content-center align-items-center" style="min-height: 150px;">
-                            <i class="fas fa-chart-bar fa-2x mb-2"></i>
-                            <h5 class="card-title">Grafik Harian</h5>
-                            <h3 class="mb-1">Pendapatan</h3>
-                            <small>Perbandingan harian</small>
+                    <div class="card dashboard-metric-card metric-daily-chart h-100">
+                        <div class="card-body">
+                            <i class="fas fa-arrow-right metric-arrow" aria-hidden="true"></i>
+                            <span class="metric-icon"><i class="fas fa-chart-line" aria-hidden="true"></i></span>
+                            <div class="metric-label">Grafik Harian</div>
+                            <div class="metric-value">Pendapatan</div>
+                            <small class="metric-note">Perbandingan harian</small>
                         </div>
                     </div>
                 </a>
@@ -404,7 +601,7 @@
 
         <div class="row mb-4">
             <div class="col-lg-6 col-md-12 mb-3">
-                <div class="card shadow h-100">
+                <div class="card shadow h-100 dashboard-chart-card">
                     <div class="card-header bg-light">
                         <h5 class="card-title mb-0">
                             <i class="fas fa-chart-line mr-2"></i>Tren Penjualan Mingguan
@@ -412,7 +609,7 @@
                     </div>
                     <div class="card-body">
                         <p class="mb-2 text-muted">Bandingkan pendapatan per hari untuk minggu ini dan minggu lalu.</p>
-                        <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="dashboard-chart-summary d-flex align-items-center justify-content-between mb-3">
                             <div>
                                 <h6 class="mb-1">Minggu ini</h6>
                                 <h3 class="mb-0">Rp {{ number_format($currentWeekSales, 0, ',', '.') }}</h3>
@@ -430,7 +627,7 @@
             </div>
 
             <div class="col-lg-6 col-md-12 mb-3">
-                <div class="card shadow h-100">
+                <div class="card shadow h-100 dashboard-chart-card">
                     <div class="card-header bg-light">
                         <h5 class="card-title mb-0">
                             <i class="fas fa-exchange-alt mr-2"></i>Perbandingan Periode Bulanan
@@ -438,7 +635,7 @@
                     </div>
                     <div class="card-body">
                         <p class="mb-2 text-muted">Bandingkan total pendapatan bulan ini dengan bulan lalu.</p>
-                        <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="dashboard-chart-summary d-flex align-items-center justify-content-between mb-3">
                             <div>
                                 <h6 class="mb-1">Bulan ini</h6>
                                 <h3 class="mb-0">Rp {{ number_format($currentMonthSales, 0, ',', '.') }}</h3>
@@ -458,7 +655,7 @@
 
         <div class="row mb-4" id="dashboard-bottom-row">
             <div class="col-lg-4 col-md-12 mb-4">
-                <div class="card shadow h-100">
+                <div class="card shadow h-100 dashboard-chart-card">
                     <div class="card-header bg-light">
                         <h5 class="card-title mb-0">
                             <i class="fas fa-chart-bar mr-2"></i>Grafik Pendapatan Harian
@@ -480,7 +677,7 @@
             </div>
 
             <div class="col-lg-4 col-md-12 mb-4">
-                <div class="card shadow h-100">
+                <div class="card shadow h-100 dashboard-chart-card">
                     <div class="card-header bg-light">
                         <h5 class="card-title mb-0">
                             <i class="fas fa-credit-card mr-2"></i>Distribusi Penggunaan Metode Pembayaran
@@ -584,6 +781,17 @@
     @if(in_array($role, ['admin', 'super_admin'], true))
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
+            Chart.defaults.font.family = '"Source Sans Pro", "Segoe UI", sans-serif';
+            Chart.defaults.color = '#748078';
+            Chart.defaults.plugins.legend.labels.usePointStyle = true;
+            Chart.defaults.plugins.legend.labels.boxWidth = 8;
+            Chart.defaults.plugins.legend.labels.padding = 18;
+            Chart.defaults.plugins.tooltip.backgroundColor = '#203c2d';
+            Chart.defaults.plugins.tooltip.titleColor = '#ffffff';
+            Chart.defaults.plugins.tooltip.bodyColor = '#f2f7f3';
+            Chart.defaults.plugins.tooltip.padding = 12;
+            Chart.defaults.plugins.tooltip.cornerRadius = 10;
+
             var ctxWeeklyTrend = document.getElementById('weeklyTrendChart');
             if (ctxWeeklyTrend) {
                 ctxWeeklyTrend = ctxWeeklyTrend.getContext('2d');
@@ -598,22 +806,28 @@
                             {
                                 label: 'Minggu Ini',
                                 data: weeklyTrendCurrent,
-                                borderColor: '#007bff',
-                                backgroundColor: 'rgba(0, 123, 255, 0.15)',
+                                borderColor: '#315d46',
+                                backgroundColor: 'rgba(49, 93, 70, 0.12)',
                                 fill: true,
-                                tension: 0.3,
-                                pointRadius: 4,
-                                pointHoverRadius: 6
+                                tension: 0.42,
+                                borderWidth: 3,
+                                pointRadius: 3,
+                                pointHoverRadius: 6,
+                                pointBackgroundColor: '#ffffff',
+                                pointBorderWidth: 2
                             },
                             {
                                 label: 'Minggu Lalu',
                                 data: weeklyTrendPrevious,
-                                borderColor: '#28a745',
-                                backgroundColor: 'rgba(40, 167, 69, 0.15)',
+                                borderColor: '#c7a56a',
+                                backgroundColor: 'rgba(199, 165, 106, 0.1)',
                                 fill: true,
-                                tension: 0.3,
-                                pointRadius: 4,
-                                pointHoverRadius: 6
+                                tension: 0.42,
+                                borderWidth: 3,
+                                pointRadius: 3,
+                                pointHoverRadius: 6,
+                                pointBackgroundColor: '#ffffff',
+                                pointBorderWidth: 2
                             }
                         ]
                     },
@@ -623,16 +837,26 @@
                         scales: {
                             y: {
                                 beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(49, 93, 70, 0.08)',
+                                    drawBorder: false
+                                },
                                 ticks: {
+                                    padding: 10,
                                     callback: function(value) {
                                         return 'Rp' + value.toLocaleString('id-ID');
                                     }
                                 }
                             },
                             x: {
+                                grid: {
+                                    display: false,
+                                    drawBorder: false
+                                },
                                 ticks: {
-                                    maxRotation: 45,
-                                    minRotation: 45
+                                    maxRotation: 0,
+                                    minRotation: 0,
+                                    padding: 8
                                 }
                             }
                         },
@@ -664,9 +888,12 @@
                         datasets: [{
                             label: 'Pendapatan (Rp)',
                             data: monthlyComparisonValues,
-                            backgroundColor: ['#28a745', '#007bff'],
-                            borderColor: ['#1e7e34', '#0056b3'],
-                            borderWidth: 1
+                            backgroundColor: ['rgba(49, 93, 70, 0.86)', 'rgba(199, 165, 106, 0.88)'],
+                            borderColor: ['#315d46', '#c7a56a'],
+                            borderWidth: 1,
+                            borderRadius: 10,
+                            borderSkipped: false,
+                            maxBarThickness: 76
                         }]
                     },
                     options: {
@@ -675,10 +902,21 @@
                         scales: {
                             y: {
                                 beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(49, 93, 70, 0.08)',
+                                    drawBorder: false
+                                },
                                 ticks: {
+                                    padding: 10,
                                     callback: function(value) {
                                         return 'Rp' + value.toLocaleString('id-ID');
                                     }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false,
+                                    drawBorder: false
                                 }
                             }
                         },
@@ -714,9 +952,12 @@
                         datasets: [{
                             label: 'Pendapatan Harian (Rp)',
                             data: {!! json_encode(array_values($pendapatanHarian)) !!},
-                            backgroundColor: '#007bff',
-                            borderColor: '#0056b3',
-                            borderWidth: 1
+                            backgroundColor: 'rgba(49, 93, 70, 0.82)',
+                            borderColor: '#315d46',
+                            borderWidth: 1,
+                            borderRadius: 7,
+                            borderSkipped: false,
+                            maxBarThickness: 34
                         }]
                     },
                     options: {
@@ -726,7 +967,12 @@
                         scales: {
                             y: {
                                 beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(49, 93, 70, 0.08)',
+                                    drawBorder: false
+                                },
                                 ticks: {
+                                    padding: 10,
                                     callback: function(value) {
                                         return 'Rp' + value.toLocaleString('id-ID');
                                     }
@@ -734,8 +980,9 @@
                             },
                             x: {
                                 ticks: {
-                                    maxRotation: 45,
-                                    minRotation: 45
+                                    maxRotation: 0,
+                                    minRotation: 0,
+                                    padding: 8
                                 }
                             }
                         },
@@ -756,21 +1003,19 @@
                 var statusChart = new Chart(ctxStatus, {
                     type: 'pie',
                     data: {
-                        labels: ['Belum Diproses', 'Sedang Diproses', 'Selesai', 'Lunas'],
+                        labels: ['Belum Bayar', 'Lunas'],
                         datasets: [{
                             data: [
-                                {{ $transaksiBelumDiproses ?? 0 }},
-                                {{ $transaksiSedangDiproses ?? 0 }},
-                                {{ $transaksiSelesai ?? 0 }},
+                                {{ $transaksiBelumBayar ?? 0 }},
                                 {{ $totalTransaksiLunas ?? 0 }}
                             ],
                             backgroundColor: [
-                                '#dc3545',
-                                '#ffc107',
-                                '#17a2b8',
-                                '#28a745'
+                                '#c76b58',
+                                '#4b8c68'
                             ],
-                            borderWidth: 1
+                            borderColor: '#fff',
+                            borderWidth: 4,
+                            hoverOffset: 8
                         }]
                     },
                     options: {
@@ -806,7 +1051,7 @@
                 ctxPaymentMethod = ctxPaymentMethod.getContext('2d');
                 var paymentLabels = {!! json_encode($paymentMethodDistribution->pluck('metode_pembayaran')) !!};
                 var paymentData = {!! json_encode($paymentMethodDistribution->pluck('count')) !!};
-                var paymentColors = ['#007bff', '#28a745', '#ffc107', '#6f42c1', '#fd7e14', '#20c997'];
+                var paymentColors = ['#315d46', '#c7a56a', '#6f947b', '#d18a70', '#8eaa90', '#b58a4c'];
 
                 new Chart(ctxPaymentMethod, {
                     type: 'doughnut',
@@ -816,12 +1061,14 @@
                             data: paymentData,
                             backgroundColor: paymentColors.slice(0, paymentLabels.length),
                             borderColor: '#fff',
-                            borderWidth: 2
+                            borderWidth: 4,
+                            hoverOffset: 8
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        cutout: '68%',
                         plugins: {
                             legend: {
                                 position: 'bottom',

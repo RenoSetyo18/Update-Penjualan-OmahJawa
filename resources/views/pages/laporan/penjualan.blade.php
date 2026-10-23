@@ -84,7 +84,6 @@
                             <thead>
                                 <tr>
                                     <th>Kode</th>
-                                    <th>Meja</th>
                                     <th>Atas Nama</th>
                                     <th>Total Harga</th>
                                     <th>Status</th>
@@ -95,7 +94,6 @@
                                 @forelse($transaksis as $transaksi)
                                 <tr>
                                     <td>{{ $transaksi->kode }}</td>
-                                    <td>{{ $transaksi->nomeja }}</td>
                                     <td>{{ $transaksi->atasnama }}</td>
                                     <td>Rp {{ number_format($transaksi->totalharga) }}</td>
                                     <td><span class="badge badge-info">{{ \App\Models\Transaksi::transaksiStatusLabel($transaksi->status) }}</span></td>
@@ -103,7 +101,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="6" class="text-center">Tidak ada data transaksi dalam periode ini</td>
+                                    <td colspan="5" class="text-center">Tidak ada data transaksi dalam periode ini</td>
                                 </tr>
                                 @endforelse
                             </tbody>

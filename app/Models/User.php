@@ -14,7 +14,6 @@ class User extends Authenticatable
     public const ROLE_SUPER_ADMIN = 'super_admin';
     public const ROLE_ADMIN = 'admin';
     public const ROLE_KASIR = 'kasir';
-    public const ROLE_KOKI = 'koki';
     public const ROLE_PELAYAN = 'pelayan';
 
     public static function availableRoles(): array
@@ -23,7 +22,6 @@ class User extends Authenticatable
             self::ROLE_SUPER_ADMIN,
             self::ROLE_ADMIN,
             self::ROLE_KASIR,
-            self::ROLE_KOKI,
             self::ROLE_PELAYAN,
         ];
     }
@@ -38,7 +36,6 @@ class User extends Authenticatable
             self::ROLE_SUPER_ADMIN => 'Super Admin',
             self::ROLE_ADMIN => 'Admin',
             self::ROLE_KASIR => 'Kasir',
-            self::ROLE_KOKI => 'Koki',
             self::ROLE_PELAYAN => 'Pelayan',
             default => ucwords(str_replace(['_', '-'], ' ', $role)),
         };

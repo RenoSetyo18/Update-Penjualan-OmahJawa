@@ -6,8 +6,9 @@
             <h1>Master Jenis Menu</h1>
         </div>
         <div class="col-sm-6 text-right">
-            <a href="{{ route('jenis.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Tambah Jenis
+            <a href="{{ route('jenis.create') }}" class="btn btn-primary btn-create-action">
+                <span class="btn-create-icon" aria-hidden="true"><i class="fas fa-plus"></i></span>
+                Tambah Jenis
             </a>
         </div>
     </div>
